@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import Navbar from './components/layout/Navbar';
+import Home from './components/layout/Home';
 import Dashboard from './components/layout/Dashboard';
 import Landing from './components/layout/Landing';
 import Login from './components/auth/Login';
@@ -44,6 +45,7 @@ class App extends Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/dashboard" component={Dashboard} />
+            <Route exact path="/home" component={Home} />
           </div>
         </Router>
       </Provider>

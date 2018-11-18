@@ -1,11 +1,56 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { getUser, updateUser } from '../../actions/profileAction';
 
 class Dashboard extends Component {
   constructor() {
     super();
+    this.state = {
+      name: '',
+      email: '',
+      accountType: '',
+      errors: {}
+    };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    if (this.props.auth.isAuthenticated) {
+      this.props.history.push('/dashboard');
+    }
+  }
+
+  componentDidMount() {
+    this.props.getUser();
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onSubmit(e) {
+    e.preventDefault();
+    const updateUser = {
+      email: this.props.profile.profile.email,
+      name: this.props.profile.profile.name,
+      id: this.props.profile.profile.id,
+      accountType: this.state.accountType
+    };
+
+    this.props.updateUser(updateUser);
+    window.location.reload();
+
+    // axios
+    //   .post('/api/auth/register', newUser)
+    //   .then(res => console.log(res.data))
+    //   .catch(err => this.setState({ errors: err.response.data }));
   }
 
   render() {
+    const { profile } = this.props.profile;
     const userAccoutNotFound = (
       <div
         className="card"
@@ -28,32 +73,247 @@ class Dashboard extends Component {
             Choose below to select your account type
           </p>
 
-          <select className="browser-default">
-            <option value="" disabled selected>
-              Choose your account type
-            </option>
-            <option value="Borrower">Borrower</option>
-            <option value="Lender">Lender</option>
-          </select>
+          <form onSubmit={this.onSubmit}>
+            <select
+              className="browser-default"
+              name="accountType"
+              value={this.state.accountType}
+              onChange={this.onChange}
+            >
+              <option value="" disabled selected>
+                Choose your account type
+              </option>
+              <option value="Borrower">Borrower</option>
+              <option value="Lender">Lender</option>
+            </select>
 
-          <button
-            className="btn waves-effect waves-light black darken-2 white-text"
-            name="action"
-            style={{
-              marginTop: '3%',
-              fontWeight: '500',
-              fontSize: '80%',
-              marginLeft: '90%'
-            }}
-          >
-            Submit
-          </button>
+            <button
+              className="btn waves-effect waves-light black darken-2 white-text"
+              name="action"
+              style={{
+                marginTop: '3%',
+                fontWeight: '500',
+                fontSize: '80%',
+                marginLeft: '90%'
+              }}
+            >
+              Submit
+            </button>
+          </form>
         </div>
       </div>
     );
 
-    return <div />;
+    const borrowerAccount = (
+      <div>
+        <div className="row">
+          <div
+            className="col l12 m12 s12"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom right, rgba(255, 105, 91, .5), rgba(165, 18, 4, .5)), url('images/login.jpg')",
+              paddingBottom: '2%'
+            }}
+          >
+            <center style={{ marginTop: '5%', marginBottom: '5%' }}>
+              <h4 className="white-text" style={{ fontWeight: '600' }}>
+                Know your loan status
+              </h4>
+            </center>
+          </div>
+        </div>
+        <div className="row" style={{ marginTop: '5%' }}>
+          <div className="col l3 m2" />
+          <div
+            className="col s12 m8 l6 card"
+            style={{
+              paddingLeft: '0',
+              borderRadius: '1%',
+              paddingTop: '1%',
+              paddingBottom: '2%'
+            }}
+          >
+            <div className="card-content">
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  fontSize: '110%',
+                  paddingLeft: '3%'
+                }}
+              >
+                Loan: <span className="red-text">NR123456</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontSize: '110%' }}
+              >
+                Active
+              </div>
+              <center style={{ marginTop: '7%' }}>
+                <div
+                  className="progress grey lighten-5"
+                  style={{ width: '95%', height: '15px', borderRadius: '5px' }}
+                >
+                  <div
+                    className="determinate orange"
+                    style={{ width: '70%' }}
+                  />
+                </div>
+              </center>
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  paddingLeft: '3%',
+                  fontFamily: 'sans-serif'
+                }}
+              >
+                <span className="red-text">Requested On</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+              >
+                <span className="red-text">Amount</span>
+              </div>
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  paddingLeft: '3%',
+                  fontFamily: 'sans-serif'
+                }}
+              >
+                <span className="black-text">Aug 6,2017</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+              >
+                <span className="black-text">$5000</span>
+              </div>
+            </div>
+          </div>
+          <div className="col l3 m2" />
+        </div>
+      </div>
+    );
+
+    const loanerStatus = (
+      <div>
+        <div className="row">
+          <div
+            className="col l12 m12 s12"
+            style={{
+              backgroundImage:
+                "linear-gradient(to bottom right, rgba(255, 105, 91, .5), rgba(165, 18, 4, .5)), url('images/login.jpg')",
+              paddingBottom: '2%'
+            }}
+          >
+            <center style={{ marginTop: '5%', marginBottom: '5%' }}>
+              <h4 className="white-text" style={{ fontWeight: '600' }}>
+                Know the staus of given loan
+              </h4>
+            </center>
+          </div>
+        </div>
+        <div className="row" style={{ marginTop: '5%' }}>
+          <div className="col l3 m2" />
+          <div
+            className="col s12 m8 l6 card"
+            style={{
+              paddingLeft: '0',
+              borderRadius: '1%',
+              paddingTop: '1%',
+              paddingBottom: '2%'
+            }}
+          >
+            <div className="card-content">
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  fontSize: '110%',
+                  paddingLeft: '3%'
+                }}
+              >
+                Loan: <span className="red-text">NR123456</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontSize: '110%' }}
+              >
+                Active
+              </div>
+              <center style={{ marginTop: '7%' }}>
+                <div
+                  className="progress grey lighten-5"
+                  style={{ width: '95%', height: '15px', borderRadius: '5px' }}
+                >
+                  <div
+                    className="determinate orange"
+                    style={{ width: '70%' }}
+                  />
+                </div>
+              </center>
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  paddingLeft: '3%',
+                  fontFamily: 'sans-serif'
+                }}
+              >
+                <span className="red-text">Granted On</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+              >
+                <span className="red-text">Amount</span>
+              </div>
+              <div
+                className="col l6 m6 s6"
+                style={{
+                  fontWeight: '600',
+                  paddingLeft: '3%',
+                  fontFamily: 'sans-serif'
+                }}
+              >
+                <span className="black-text">Aug 6,2017</span>
+              </div>
+              <div
+                className="col l6 m6 s6 green-text right-align"
+                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+              >
+                <span className="black-text">$5000</span>
+              </div>
+            </div>
+          </div>
+          <div className="col l3 m2" />
+        </div>
+      </div>
+    );
+
+    var templateUse = '';
+
+    if (profile.accountType === 'null') {
+      templateUse = userAccoutNotFound;
+    } else if (profile.accountType === 'Borrower') {
+      templateUse = borrowerAccount;
+    } else {
+      templateUse = loanerStatus;
+    }
+
+    return <div>{templateUse}</div>;
   }
 }
 
-export default Dashboard;
+const mapStateToProps = state => ({
+  auth: state.auth,
+  errors: state.errors,
+  profile: state.profile
+});
+
+export default connect(mapStateToProps, { getUser, updateUser })(Dashboard);

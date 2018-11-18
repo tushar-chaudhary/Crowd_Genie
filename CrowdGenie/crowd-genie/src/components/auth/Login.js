@@ -53,28 +53,28 @@ class Login extends Component {
     this.props.loginUser(newUser);
   }
 
-  responseFacebook = response => {
-    const newData = {
-      email: response.email,
-      name: response.name
-    };
-
-    axios.post('/api/auth/facebookUser', newData).then(res => {
-      const { token } = res.data;
-      // Set token to ls
-      localStorage.setItem('jwtToken', token);
-      // Set token to Auth header
-      setAuthToken(token);
-      // Decode token to get user data
-      const decoded = jwt_decode(token);
-      console.log(decoded);
-      setCurrentfacebookUser(decoded);
-      window.location.reload();
-    });
-  };
-
   render() {
     const { errors } = this.state;
+
+    const responseFacebook = response => {
+      const newData = {
+        email: response.email,
+        name: response.name
+      };
+
+      axios.post('/api/auth/facebookUser', newData).then(res => {
+        const { token } = res.data;
+        // Set token to ls
+        localStorage.setItem('jwtToken', token);
+        // Set token to Auth header
+        setAuthToken(token);
+        // Decode token to get user data
+        const decoded = jwt_decode(token);
+        console.log(decoded);
+        setCurrentfacebookUser(decoded);
+        window.location.reload();
+      });
+    };
 
     return (
       <div>
@@ -220,10 +220,10 @@ class Login extends Component {
                     <center>
                       <FacebookLogin
                         appId="573322219804480"
-                        autoLoad={true}
+                        autoLoad={false}
                         fields="name,email,picture"
                         onClick={this.componentClicked}
-                        callback={this.responseFacebook}
+                        callback={responseFacebook}
                       />
                     </center>,
                     {/* <center>

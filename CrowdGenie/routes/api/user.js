@@ -121,7 +121,23 @@ router.get(
   }
 );
 
-
+router.post(
+  '/updatecurrent',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    User.findOneAndUpdate({ email: req.body.email }).then(response => {
+      response.accountType = req.body.accountType;
+      response.save().then(data => {
+        res.json({
+          id: data.id,
+          name: data.name,
+          email: data.email,
+          accountType: data.accountType
+        });
+      });
+    });
+  }
+);
 
 router.post('/facebookUser', (req, res) => {
   const errors = {};
