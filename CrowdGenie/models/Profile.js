@@ -14,9 +14,8 @@ const ProfileSchema = new Schema({
         required: true
       },
       loanGranter: {
-        type: Schema.Types.ObjectId,
-        ref: 'users',
-        required: false
+        type: String,
+        default: 'null'
       },
       amount: {
         type: String,
@@ -32,7 +31,7 @@ const ProfileSchema = new Schema({
       },
       rejected: {
         type: Boolean,
-        default: true
+        default: false
       }
     }
   ],

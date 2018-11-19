@@ -87,4 +87,22 @@ router.post(
   }
 );
 
+// @route   GET api/all
+// @desc    Get current active borrowers that are asking for loan
+// @access  Public
+router.get('/all', (req, res) => {
+  const errors = {};
+
+  Profile.find({ loan: { $elemMatch: { active: true, rejected: false } } })
+    .populate('user', ['email', 'accountType'])
+    .then(profile => {
+      if (!profile) {
+        errors.noprofile = 'There is no profile for this user';
+        return res.status(404).json(errors);
+      }
+      res.json(profile);
+    })
+    .catch(err => res.status(404).json(err));
+});
+
 module.exports = router;

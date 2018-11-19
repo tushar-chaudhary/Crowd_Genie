@@ -5,7 +5,9 @@ import {
   GET_CURRENT_USER,
   GET_ERRORS,
   UPDATE_CURRENT_USER,
-  REQUEST_LOAN
+  REQUEST_LOAN,
+  GET_ALL_LOAN_REQUEST,
+  SUBMIT_LOAN_REQUEST
 } from './types';
 
 export const getUser = () => dispatch => {
@@ -50,6 +52,40 @@ export const forwardRequest = userData => dispatch => {
     .then(res =>
       dispatch({
         type: REQUEST_LOAN,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const getallloanRequest = () => dispatch => {
+  axios
+    .get('/api/borrower/all')
+    .then(res =>
+      dispatch({
+        type: GET_ALL_LOAN_REQUEST,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
+};
+
+export const submitloanRequest = userData => dispatch => {
+  axios
+    .post('/api/lender/grant_loan', userData)
+    .then(res =>
+      dispatch({
+        type: SUBMIT_LOAN_REQUEST,
         payload: res.data
       })
     )

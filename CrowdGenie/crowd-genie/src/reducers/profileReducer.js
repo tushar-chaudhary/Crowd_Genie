@@ -3,12 +3,16 @@ import isEmpty from '../validation/is-empty';
 import {
   GET_CURRENT_USER,
   UPDATE_CURRENT_USER,
-  REQUEST_LOAN
+  REQUEST_LOAN,
+  GET_ALL_LOAN_REQUEST,
+  SUBMIT_LOAN_REQUEST
 } from '../actions/types';
 
 const initialState = {
   profile: {},
-  loanData: {}
+  loanData: {},
+  allActiveloan: {},
+  grantedLoan: {}
 };
 
 export default function(state = initialState, action) {
@@ -27,6 +31,16 @@ export default function(state = initialState, action) {
       return {
         ...state,
         loanData: action.payload
+      };
+    case GET_ALL_LOAN_REQUEST:
+      return {
+        ...state,
+        allActiveloan: action.payload
+      };
+    case SUBMIT_LOAN_REQUEST:
+      return {
+        ...state,
+        grantedLoan: action.payload
       };
     default:
       return state;

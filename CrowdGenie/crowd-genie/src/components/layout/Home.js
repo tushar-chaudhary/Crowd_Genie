@@ -1,22 +1,30 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { forwardRequest } from '../../actions/profileAction';
+import { forwardRequest, submitloanRequest } from '../../actions/profileAction';
 
 class Home extends Component {
   constructor() {
     super();
     this.state = {
       amount: '',
+      profile: '',
       amountMonth: '',
+      email: '',
+      loanId: '',
       errors: {}
     };
 
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.onSubmitNew = this.onSubmitNew.bind(this);
   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  componentDidMount() {
+    this.setState({ profile: this.props.profile.profile });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -31,6 +39,17 @@ class Home extends Component {
     };
 
     this.props.forwardRequest(newUser);
+    this.props.history.push('/dashboard');
+  }
+
+  onSubmitNew(e) {
+    e.preventDefault();
+    const grantUser = {
+      granterId: this.state.profile.id,
+      loanId: this.state.loanId
+    };
+
+    this.props.submitloanRequest(grantUser);
   }
 
   render() {
@@ -146,21 +165,39 @@ class Home extends Component {
               >
                 I'd like to give loan to
               </p>
-              <div className="input-field">
-                <input
-                  placeholder="Enter User ID"
-                  id="first_name"
-                  type="text"
-                  className="validate"
-                />
-              </div>
-              <button
-                className="btn waves-effect waves-light light-blue darken-2 white-text"
-                name="action"
-                style={{ marginTop: '3%', fontWeight: '500', fontSize: '80%' }}
-              >
-                Approve loan
-              </button>
+              <form onSubmit={this.onSubmitNew}>
+                <div className="input-field">
+                  <input
+                    placeholder="Enter User Email"
+                    type="text"
+                    name="email"
+                    value={this.state.email}
+                    onChange={this.onChange}
+                    className="validate"
+                  />
+                </div>
+                <div className="input-field">
+                  <input
+                    placeholder="Enter Loan ID"
+                    type="text"
+                    name="loanId"
+                    value={this.state.loanId}
+                    onChange={this.onChange}
+                    className="validate"
+                  />
+                </div>
+                <button
+                  className="btn waves-effect waves-light light-blue darken-2 white-text"
+                  name="action"
+                  style={{
+                    marginTop: '3%',
+                    fontWeight: '500',
+                    fontSize: '80%'
+                  }}
+                >
+                  Approve loan
+                </button>
+              </form>
             </center>
           </div>
         </div>
@@ -183,7 +220,10 @@ const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors,
   profile: state.profile,
-  loanData: state.loanData
+  loanData: state.loanData,
+  grantedLoan: state.grantedLoan
 });
 
-export default connect(mapStateToProps, { forwardRequest })(Home);
+export default connect(mapStateToProps, { forwardRequest, submitloanRequest })(
+  Home
+);

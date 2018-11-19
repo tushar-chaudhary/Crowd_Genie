@@ -32,9 +32,8 @@ router.get(
         if (!profile) {
           errors.noprofile = 'There is no profile for this user';
           return res.status(404).json(errors);
-        }
-        else{
-            res.json(profile);
+        } else {
+          res.json(profile);
         }
       })
       .catch(err => res.status(404).json(err));
@@ -44,36 +43,26 @@ router.get(
 // @route   POST api/request_loan
 // @desc    POST loan request
 // @access  Private
-router.post(
-  '/grant_loan',
-  passport.authenticate('jwt', { session: false }),
-  (req, res) => {
-    const { errors, isValid } = validateProfileInput(req.body);
+router.post('/grant_loan', (req, res) => {
+  console.log(req.body);
 
-    // Check Validation
-    if (!isValid) {
-      return res.status(400).json(errors);
-    }
-
-    Profile.findOneAndUpdate({ user: req.body.userid })
-      .then(profile => {
-        if (!profile) {
-            return res.status(400).json({error: "Profile not found"});
-        } else {
-
-          profile.forEach(loan=>{
-              if(loan.loanId === req.body.loanId){
-                  loan.loanGranter = req.user.id
-                  loan.save()
-                  .then(user => res.json(UserProfile))
-                  .catch(err => console.log(err));
-              }
-              res.json(loan);
-          })  
+  Profile.findOne({
+    loan: { $elemMatch: { loanId: req.body.loanId } }
+  })
+    .then(profile => {
+      profile.loan.forEach(loans => {
+        if (loans.loanId === req.body.loanId) {
+          loans.loanGranter = req.body.granterId;
+          loans.active = false;
         }
-      })
-      .catch(err => res.status(404).json(err));
-  }
-);
+      });
+
+      profile
+        .save()
+        .then(user => res.json(user))
+        .catch(err => console.log(err));
+    })
+    .catch(err => console.log(err));
+});
 
 module.exports = router;

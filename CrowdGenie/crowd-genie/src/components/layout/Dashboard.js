@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getUser, updateUser } from '../../actions/profileAction';
+import {
+  getUser,
+  updateUser,
+  getallloanRequest
+} from '../../actions/profileAction';
 
 class Dashboard extends Component {
   constructor() {
@@ -10,6 +14,7 @@ class Dashboard extends Component {
       name: '',
       email: '',
       accountType: '',
+      allLoan: '',
       loan: '',
       errors: {}
     };
@@ -22,10 +27,9 @@ class Dashboard extends Component {
     if (this.props.auth.isAuthenticated) {
       this.props.history.push('/dashboard');
     }
-  }
 
-  componentDidMount() {
     this.props.getUser();
+    this.props.getallloanRequest();
   }
 
   onChange(e) {
@@ -37,6 +41,10 @@ class Dashboard extends Component {
       this.setState({ loan: nextProps.profile.profile.loanDetails.loan });
     } else {
       this.setState({ loan: '' });
+    }
+
+    if (nextProps.profile.allActiveloan) {
+      this.setState({ allLoan: nextProps.profile.allActiveloan });
     }
   }
 
@@ -60,7 +68,7 @@ class Dashboard extends Component {
 
   render() {
     const { profile } = this.props.profile;
-    const { loan } = this.state;
+    const { loan, allLoan } = this.state;
 
     const userAccoutNotFound = (
       <div
@@ -160,19 +168,20 @@ class Dashboard extends Component {
                     <div
                       className="determinate orange"
                       style={{
-                        width: `${loan[index].rejected ? '10%' : '100%'}`
+                        width: `${loan[index].rejected ? '0%' : '100%'}`
                       }}
                     />
                   </div>
                 </center>
                 <div
-                  className="col l6 m6 s6 green-text right-align"
+                  className="col l6 m6 s6 green-text left-align"
                   style={{
                     fontWeight: '600',
-                    fontFamily: 'sans-serif'
+                    fontFamily: 'sans-serif',
+                    paddingLeft: '3%'
                   }}
                 >
-                  <span className="red-text" />
+                  <span className="red-text">Granted</span>
                 </div>
                 <div
                   className="col l6 m6 s6 green-text right-align"
@@ -184,10 +193,16 @@ class Dashboard extends Component {
                   <span className="red-text">Amount</span>
                 </div>
                 <div
-                  className="col l6 m6 s6 green-text right-align"
-                  style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+                  className="col l6 m6 s6 green-text left-align"
+                  style={{
+                    fontWeight: '600',
+                    fontFamily: 'sans-serif',
+                    paddingLeft: '3%'
+                  }}
                 >
-                  <span className="black-text" />
+                  <span className="black-text">
+                    {loan[index].loanGranter !== 'null' ? 'YES' : 'NO'}
+                  </span>
                 </div>
                 <div
                   className="col l6 m6 s6 green-text right-align"
@@ -218,6 +233,127 @@ class Dashboard extends Component {
               <center>
                 <h3 style={{ fontWeight: '600', fontFamily: 'sans-serif' }}>
                   You have not applied for the loan
+                </h3>
+              </center>
+            </div>
+          </div>
+          <div className="col l3 m2" />
+        </div>
+      );
+    }
+
+    let loanerDashboard = [];
+
+    if (allLoan !== '') {
+      for (var index = 0; index < allLoan.length; index++) {
+        allLoan[index].loan.forEach((activeLoans, key) => {
+          loanerDashboard.push(
+            <div className="row" style={{ marginTop: '5%' }}>
+              <div className="col l3 m2" />
+              <div
+                className="col s12 m8 l6 card"
+                style={{
+                  paddingLeft: '0',
+                  borderRadius: '1%',
+                  paddingTop: '1%',
+                  paddingBottom: '2%'
+                }}
+              >
+                <div className="card-content">
+                  <div
+                    className="col l6 m6 s6"
+                    style={{
+                      fontWeight: '600',
+                      fontSize: '110%',
+                      paddingLeft: '3%'
+                    }}
+                  >
+                    Loan: <span className="red-text">{activeLoans.loanId}</span>
+                  </div>
+                  <div
+                    className="col l6 m6 s6 green-text right-align"
+                    style={{ fontWeight: '600', fontSize: '110%' }}
+                  >
+                    {activeLoans.active ? 'Active' : 'Not Active'}
+                  </div>
+                  <center style={{ marginTop: '7%' }}>
+                    <div
+                      className="progress grey lighten-5"
+                      style={{
+                        width: '95%',
+                        height: '15px',
+                        borderRadius: '5px'
+                      }}
+                    >
+                      <div
+                        className="determinate orange"
+                        style={{
+                          width: `${activeLoans.rejected ? '0%' : '100%'}`
+                        }}
+                      />
+                    </div>
+                  </center>
+                  <div
+                    className="col l6 m6 s6 green-text left-align"
+                    style={{
+                      fontWeight: '600',
+                      fontFamily: 'sans-serif',
+                      paddingLeft: '3%'
+                    }}
+                  >
+                    <span className="red-text">Email</span>
+                  </div>
+                  <div
+                    className="col l6 m6 s6 green-text right-align"
+                    style={{
+                      fontWeight: '600',
+                      fontFamily: 'sans-serif'
+                    }}
+                  >
+                    <span className="red-text">Amount</span>
+                  </div>
+                  <div
+                    className="col l6 m6 s6 green-text left-align"
+                    style={{
+                      fontWeight: '600',
+                      fontFamily: 'sans-serif',
+                      paddingLeft: '3%'
+                    }}
+                  >
+                    <span className="black-text">
+                      {allLoan[index].user.email}
+                    </span>
+                  </div>
+                  <div
+                    className="col l6 m6 s6 green-text right-align"
+                    style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
+                  >
+                    <span className="black-text">${activeLoans.amount}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="col l3 m2" />
+            </div>
+          );
+        });
+      }
+    } else {
+      loanerDashboard = (
+        <div className="row" style={{ marginTop: '5%' }}>
+          <div className="col l3 m2" />
+          <div
+            className="col s12 m8 l6 card"
+            style={{
+              paddingLeft: '0',
+              borderRadius: '1%',
+              paddingTop: '1%',
+              paddingBottom: '2%'
+            }}
+          >
+            <div className="card-content">
+              <center>
+                <h3 style={{ fontWeight: '600', fontFamily: 'sans-serif' }}>
+                  No one has applied for loan
                 </h3>
               </center>
             </div>
@@ -262,86 +398,12 @@ class Dashboard extends Component {
           >
             <center style={{ marginTop: '5%', marginBottom: '5%' }}>
               <h4 className="white-text" style={{ fontWeight: '600' }}>
-                Know the staus of given loan
+                People are asking for your help
               </h4>
             </center>
           </div>
         </div>
-        <div className="row" style={{ marginTop: '5%' }}>
-          <div className="col l3 m2" />
-          <div
-            className="col s12 m8 l6 card"
-            style={{
-              paddingLeft: '0',
-              borderRadius: '1%',
-              paddingTop: '1%',
-              paddingBottom: '2%'
-            }}
-          >
-            <div className="card-content">
-              <div
-                className="col l6 m6 s6"
-                style={{
-                  fontWeight: '600',
-                  fontSize: '110%',
-                  paddingLeft: '3%'
-                }}
-              >
-                Loan: <span className="red-text">NR123456</span>
-              </div>
-              <div
-                className="col l6 m6 s6 green-text right-align"
-                style={{ fontWeight: '600', fontSize: '110%' }}
-              >
-                Active
-              </div>
-              <center style={{ marginTop: '7%' }}>
-                <div
-                  className="progress grey lighten-5"
-                  style={{ width: '95%', height: '15px', borderRadius: '5px' }}
-                >
-                  <div
-                    className="determinate orange"
-                    style={{ width: '70%' }}
-                  />
-                </div>
-              </center>
-              <div
-                className="col l6 m6 s6"
-                style={{
-                  fontWeight: '600',
-                  paddingLeft: '3%',
-                  fontFamily: 'sans-serif'
-                }}
-              >
-                <span className="red-text">Granted On</span>
-              </div>
-              <div
-                className="col l6 m6 s6 green-text right-align"
-                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
-              >
-                <span className="red-text">Amount</span>
-              </div>
-              <div
-                className="col l6 m6 s6"
-                style={{
-                  fontWeight: '600',
-                  paddingLeft: '3%',
-                  fontFamily: 'sans-serif'
-                }}
-              >
-                <span className="black-text">Aug 6,2017</span>
-              </div>
-              <div
-                className="col l6 m6 s6 green-text right-align"
-                style={{ fontWeight: '600', fontFamily: 'sans-serif' }}
-              >
-                <span className="black-text">$5000</span>
-              </div>
-            </div>
-          </div>
-          <div className="col l3 m2" />
-        </div>
+        {loanerDashboard}
       </div>
     );
 
@@ -365,4 +427,8 @@ const mapStateToProps = state => ({
   profile: state.profile
 });
 
-export default connect(mapStateToProps, { getUser, updateUser })(Dashboard);
+export default connect(mapStateToProps, {
+  getUser,
+  updateUser,
+  getallloanRequest
+})(Dashboard);
