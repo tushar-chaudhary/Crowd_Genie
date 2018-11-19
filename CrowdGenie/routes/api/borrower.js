@@ -50,18 +50,17 @@ router.post(
   '/request_loan',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    const { errors, isValid } = validateProfileInput(req.body);
+    // const { errors, isValid } = validateProfileInput(req.body);
 
-    // Check Validation
-    if (!isValid) {
-      return res.status(400).json(errors);
-    }
+    // // Check Validation
+    // if (!isValid) {
+    //   return res.status(400).json(errors);
+    // }
 
     const loan = {
       loanId: uid.randomUUID(8),
       amount: req.body.amount,
-      amount_month: req.body.amount_month,
-      duration: req.body.duration
+      amount_month: req.body.amountMonth
     };
 
     Profile.findOne({ user: req.user.id })
@@ -71,13 +70,16 @@ router.post(
             user: req.user.id,
             loan: loan
           });
+
           UserProfile.save()
             .then(user => res.json(UserProfile))
             .catch(err => console.log(err));
         } else {
-          const UserProfile = profile.loan.unshift(loan);
-          UserProfile.save()
-            .then(user => res.json(UserProfile))
+          profile.loan = profile.loan.unshift(loan);
+          const updateProfile = Profile(profile);
+          updateProfile
+            .save()
+            .then(user => res.json(user))
             .catch(err => console.log(err));
         }
       })

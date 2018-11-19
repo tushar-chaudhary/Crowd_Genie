@@ -24,7 +24,7 @@ class Navbar extends Component {
           Crowd Genie
         </Link>
 
-        <ul id="nav-mobile" className="right hide-on-med-and-down black-text">
+        <ul id="nav-mobile" className="right hide-on-small black-text">
           <li>
             <Link
               className="black"
@@ -56,19 +56,15 @@ class Navbar extends Component {
         >
           Crowd Genie
         </Link>
-        <ul id="nav-mobile" className="right hide-on-med-and-down black-text">
+        <ul id="nav-mobile" className="right hide-on-small black-text">
           <li>
-            <a
-              className="black dropdown-trigger"
-              data-target="dropdown1"
-              href=""
+            <Link
+              className="black"
+              to="/dashboard"
               style={{ color: 'white', fontWeight: '600' }}
             >
-              <i className="fa fa-bell" aria-hidden="true" />
-              <span className="new red badge" style={{ fontWeight: '600' }}>
-                4
-              </span>
-            </a>
+              Dashboard
+            </Link>
           </li>
           <li>
             <Link

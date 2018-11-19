@@ -1,10 +1,14 @@
 import isEmpty from '../validation/is-empty';
 
-import { GET_CURRENT_USER, UPDATE_CURRENT_USER } from '../actions/types';
+import {
+  GET_CURRENT_USER,
+  UPDATE_CURRENT_USER,
+  REQUEST_LOAN
+} from '../actions/types';
 
 const initialState = {
-  isAuthenticated: false,
-  profile: {}
+  profile: {},
+  loanData: {}
 };
 
 export default function(state = initialState, action) {
@@ -18,6 +22,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         profile: action.payload
+      };
+    case REQUEST_LOAN:
+      return {
+        ...state,
+        loanData: action.payload
       };
     default:
       return state;

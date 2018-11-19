@@ -26,12 +26,9 @@ const ProfileSchema = new Schema({
         type: String,
         required: true
       },
-      duration: {
-        type: Date
-      },
       active: {
         type: Boolean,
-        default: false
+        default: true
       },
       rejected: {
         type: Boolean,

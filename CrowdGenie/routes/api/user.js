@@ -11,6 +11,7 @@ const validateLoginInput = require('../../validation/login');
 
 // Load User model
 const User = require('../../models/User');
+const Profile = require('../../models/Profile');
 
 // @route   GET api/users/test
 // @desc    Tests users route
@@ -112,11 +113,14 @@ router.get(
   '/current',
   passport.authenticate('jwt', { session: false }),
   (req, res) => {
-    res.json({
-      id: req.user.id,
-      name: req.user.name,
-      email: req.user.email,
-      accountType: req.user.accountType
+    Profile.findOne({ user: req.user.id }).then(data => {
+      res.json({
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        accountType: req.user.accountType,
+        loanDetails: data
+      });
     });
   }
 );

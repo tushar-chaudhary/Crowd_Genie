@@ -1,7 +1,12 @@
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
 
-import { GET_CURRENT_USER, GET_ERRORS, UPDATE_CURRENT_USER } from './types';
+import {
+  GET_CURRENT_USER,
+  GET_ERRORS,
+  UPDATE_CURRENT_USER,
+  REQUEST_LOAN
+} from './types';
 
 export const getUser = () => dispatch => {
   axios
@@ -37,4 +42,21 @@ export const updateUser = userData => dispatch => {
         })
       )
   );
+};
+
+export const forwardRequest = userData => dispatch => {
+  axios
+    .post('/api/borrower/request_loan', userData)
+    .then(res =>
+      dispatch({
+        type: REQUEST_LOAN,
+        payload: res.data
+      })
+    )
+    .catch(err =>
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      })
+    );
 };
