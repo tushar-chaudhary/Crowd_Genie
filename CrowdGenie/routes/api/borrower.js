@@ -93,7 +93,7 @@ router.post(
 router.get('/all', (req, res) => {
   const errors = {};
 
-  Profile.find({ loan: { $elemMatch: { active: true, rejected: false } } })
+  Profile.find({ loan: { $elemMatch: { rejected: false } } })
     .populate('user', ['email', 'accountType'])
     .then(profile => {
       if (!profile) {

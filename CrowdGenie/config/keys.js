@@ -1,4 +1,4 @@
 module.exports = {
-    mongoURI: 'mongodb://tushar:chaudharyt1997@ds023425.mlab.com:23425/react',
-    secretOrKey: 'secret'
-  };
+  mongoURI: 'mongodb://tushar:tushar1997@ds155315.mlab.com:55315/react',
+  secretOrKey: 'secret'
+};

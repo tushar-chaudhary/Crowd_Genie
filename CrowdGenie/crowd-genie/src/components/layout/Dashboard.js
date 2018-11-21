@@ -30,6 +30,12 @@ class Dashboard extends Component {
 
     this.props.getUser();
     this.props.getallloanRequest();
+
+    this.setState({
+      loan: this.props.profile.loanData.loan
+        ? this.props.profile.loanData.loan
+        : ''
+    });
   }
 
   onChange(e) {
@@ -37,7 +43,9 @@ class Dashboard extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.profile.profile.loanDetails) {
+    if (nextProps.profile.loanData.loan) {
+      this.setState({ loan: nextProps.profile.loanData.loan });
+    } else if (nextProps.profile.profile.loanDetails) {
       this.setState({ loan: nextProps.profile.profile.loanDetails.loan });
     } else {
       this.setState({ loan: '' });
@@ -86,7 +94,7 @@ class Dashboard extends Component {
         <div className="card-content">
           <h3 style={{ fontWeight: '600' }}>Just one more step....</h3>
           <h5 style={{ fontWeight: '500', fontFamily: 'sans-serif' }}>
-            Tushar
+            {profile.name}
           </h5>
           <p style={{ fontFamily: 'sans-serif', fontWeight: '500' }}>
             Choose below to select your account type
@@ -424,7 +432,8 @@ class Dashboard extends Component {
 const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors,
-  profile: state.profile
+  profile: state.profile,
+  loanData: state.loanData
 });
 
 export default connect(mapStateToProps, {

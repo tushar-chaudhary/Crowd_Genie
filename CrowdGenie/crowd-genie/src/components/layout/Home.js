@@ -220,7 +220,7 @@ const mapStateToProps = state => ({
   auth: state.auth,
   errors: state.errors,
   profile: state.profile,
-  loanData: state.loanData,
+  loanData: state.profile.loanData,
   grantedLoan: state.grantedLoan
 });
 
